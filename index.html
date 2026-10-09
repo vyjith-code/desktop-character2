@@ -63,16 +63,21 @@
             character.classList.remove("flying");
             character.src = "assets/walk/walk1.png";
             character.style.display = "block";
+            // playSound(entrySound);
         });
 
         // =====================================
         // CHARACTER ARRIVES
         // =====================================
 
-        window.companion.onCharacterArrived(() => {
-            character.classList.remove("flying");
-            character.src = "assets/idle/idle.png";
-        });
+       window.companion.onCharacterArrived(() => {
+  character.classList.remove("flying");
+  character.src = "assets/idle/idle.png";
+
+  // Stop entry sound when character arrives
+  entrySound.pause();
+  entrySound.currentTime = 0;
+});
 
         // =====================================
         // SHOW REMINDER
@@ -104,25 +109,23 @@
             // Use the existing flying animation
             character.src = "assets/walk/walk1.png";
             character.classList.add("flying");
+            playSound(exitSound);
         });
 
         // =====================================
         // RESET AFTER LEAVING SCREEN
         // =====================================
+window.companion.onResetCharacter(() => {
+  // Stop exit sound
+  exitSound.pause();
+  exitSound.currentTime = 0;
 
-        window.companion.onResetCharacter(() => {
-            character.classList.remove("flying");
-
-            reminder.classList.remove(
-                "popup-show",
-                "popup-hide"
-            );
-
-            reminder.style.display = "none";
-            character.style.display = "none";
-
-            character.src = "assets/idle/idle.png";
-        });
+  character.classList.remove("flying");
+  reminder.classList.remove("popup-show", "popup-hide");
+  reminder.style.display = "none";
+  character.style.display = "none";
+  character.src = "assets/idle/idle.png";
+});
 
         // =====================================
         // OK BUTTON
@@ -134,6 +137,21 @@
             // Ask Electron main process to fly out
             window.companion.reminderOK();
         });
+
+const entrySound = new Audio("assets/sounds/hero-entry.mp3");
+const exitSound = new Audio("assets/sounds/superhero-exit.mp3");
+
+entrySound.volume = 0.5;
+exitSound.volume = 0.5;
+
+function playSound(sound) {
+  sound.currentTime = 0;
+  sound.play().catch(error => {
+    console.error("Sound error:", error);
+  });
+}
+
+
     </script>
 
 </body>
