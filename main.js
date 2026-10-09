@@ -17,7 +17,7 @@ const TEST_MODE = false;
 const REMINDER_INTERVAL = 30 * 60 * 1000;
 
 // ===============================
-// CREATE WINDOW
+// CREATE WINDOW 
 // ===============================
 
 function createWindow() {
@@ -40,11 +40,12 @@ win = new BrowserWindow({
 
     show: false,
 
-    webPreferences: {
-        preload: path.join(__dirname, 'preload.js'),
-        contextIsolation: true,
-        nodeIntegration: false
-    }
+   webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+      autoplayPolicy: 'no-user-gesture-required'
+}
 });
 
 win.loadFile('index.html');
@@ -215,18 +216,15 @@ function flyOut() {
         );
 
         // Finished leaving the screen
-        if (x >= targetX) {
+      if (x >= targetX) {
+  clearInterval(timer);
 
-            clearInterval(timer);
+  win.webContents.send('stop-exit-sound');
+  win.hide();
+  win.webContents.send('reset-character');
 
-            win.hide();
-
-            // Reset character after leaving
-            win.webContents.send('reset-character');
-
-            // Schedule next reminder
-            scheduleNextReminder();
-        }
+  scheduleNextReminder();
+}
 
     }, 20);
 }
