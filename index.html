@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Desktop Companion</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- CHARACTER -->
+    <img
+        id="character"
+        src="assets/walk/walk1.png"
+        alt="Desktop Companion"
+    >
+
+    <!-- WATER REMINDER -->
+    <div id="reminder">
+
+        <div class="popup-title">
+            Hey Vyjith! 👋
+        </div>
+
+        <div class="message">
+            Please Drink Some Water
+        </div>
+
+        <button id="okButton">
+            OK
+        </button>
+
+    </div>
+
+    <script>
+        const character = document.getElementById("character");
+        const reminder = document.getElementById("reminder");
+        const okButton = document.getElementById("okButton");
+
+        // =====================================
+        // INITIAL STATE
+        // =====================================
+
+        reminder.style.display = "none";
+        character.style.display = "none";
+        character.classList.remove("flying");
+
+        // =====================================
+        // CHARACTER ENTERS FROM LEFT
+        // =====================================
+
+        window.companion.onShowCharacter(() => {
+            reminder.style.display = "none";
+
+            character.classList.remove("flying");
+            character.src = "assets/walk/walk1.png";
+            character.style.display = "block";
+        });
+
+        // =====================================
+        // CHARACTER ARRIVES
+        // =====================================
+
+        window.companion.onCharacterArrived(() => {
+            character.classList.remove("flying");
+            character.src = "assets/idle/idle.png";
+        });
+
+        // =====================================
+        // SHOW REMINDER
+        // =====================================
+
+        window.companion.onShowReminder(() => {
+            reminder.classList.remove("popup-hide");
+            reminder.style.display = "block";
+            reminder.classList.add("popup-show");
+        });
+
+        // =====================================
+        // HIDE REMINDER
+        // =====================================
+
+        window.companion.onHideReminder(() => {
+            reminder.classList.remove("popup-show");
+            reminder.classList.add("popup-hide");
+        });
+
+        // =====================================
+        // START FLYING TO RIGHT
+        // =====================================
+
+        window.companion.onStartFlying(() => {
+            reminder.classList.remove("popup-show");
+            reminder.classList.add("popup-hide");
+
+            // Use the existing flying animation
+            character.src = "assets/walk/walk1.png";
+            character.classList.add("flying");
+        });
+
+        // =====================================
+        // RESET AFTER LEAVING SCREEN
+        // =====================================
+
+        window.companion.onResetCharacter(() => {
+            character.classList.remove("flying");
+
+            reminder.classList.remove(
+                "popup-show",
+                "popup-hide"
+            );
+
+            reminder.style.display = "none";
+            character.style.display = "none";
+
+            character.src = "assets/idle/idle.png";
+        });
+
+        // =====================================
+        // OK BUTTON
+        // =====================================
+
+        okButton.addEventListener("click", (event) => {
+            event.stopPropagation();
+
+            // Ask Electron main process to fly out
+            window.companion.reminderOK();
+        });
+    </script>
+
+</body>
+</html>
+
