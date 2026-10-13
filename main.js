@@ -11,10 +11,19 @@ let reminderTimer = null;
 // true  = 10 seconds
 // false = 30 minutes
 
+
+
+
 const TEST_MODE = false;
 
-
+// const REMINDER_INTERVAL = 10 * 1000;
+// const REMINDER_INTERVAL = 30 * 60 * 1000;
 const REMINDER_INTERVAL = 30 * 60 * 1000;
+
+
+// const REMINDER_INTERVAL = TEST_MODE
+//     ? 10 * 1000
+//     : 30 * 60 * 1000;
 
 // ===============================
 // CREATE WINDOW 
@@ -49,7 +58,6 @@ win = new BrowserWindow({
 });
 
 win.loadFile('index.html');
-
 // First reminder
 scheduleNextReminder();
 
